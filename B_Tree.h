@@ -100,6 +100,7 @@ public:
 	node_pointer get_root() {
 		return root;
 	}
+	void load(istream&f);
 protected:
 	inline bool is_full(node_pointer r) {
 		return r->key_cnt == max_key_cnt;
@@ -185,13 +186,13 @@ inline void B_Tree<T, comparator, printer>::check(ostream & f, node_pointer r)
 {
 	if (r == nullptr) return;
 	if (r->key_cnt == 0) {
-		f << "error:" << r << " node is empty." << endl;
-		f << r->key[0] << endl;
+		f << "error:" << r << " node is empty." << '\n';
+		f << r->key[0] << '\n';
 	}
 	for (int i = 0; i <= r->key_cnt; ++i) {
 		if (r->child[i]!=nullptr && r->child[i]->p != r) {
-			f << "error:" << r->child[i] << "不是父亲的儿子" << " p= " << r << endl;
-			f << r->child[i]->key[0] << "\t" << r->key[0] << endl;
+			f << "error:" << r->child[i] << "不是父亲的儿子" << " p= " << r << '\n';
+			f << r->child[i]->key[0] << "\t" << r->key[0] << '\n';
 		}
 	}
 	for (int i = 0; i <= r->key_cnt; ++i)
@@ -347,7 +348,7 @@ B_Tree<T, comparator, printer>::merge_siblings(node_pointer l, node_pointer r)
 	if (p->key_cnt == 0) { // 实际上，只有当p是root才可能出现这种情况
 		// 空了，回收节点，并更新root的值
 		rm_node(p);
-		root = l;
+		root = l;  root->p = nullptr;
 	}
 	return l;
 }
@@ -501,6 +502,23 @@ inline void B_Tree<T, comparator, printer>::remove(const value_type & key, bool 
 			it = it->child[pos];
 		}
 	}
+}
+
+template<class T, class comparator, class printer>
+inline void B_Tree<T, comparator, printer>::load(istream & f)
+{
+	value_type tmp;
+	while (true) {
+		f >> tmp;
+		if (f.fail())
+			break;
+		try {
+			insert(tmp);
+		}
+		catch (invalid_argument &e){
+			//ignore
+		}
+	}	
 }
 
 //

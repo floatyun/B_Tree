@@ -11,7 +11,7 @@
 #include <algorithm>
 using namespace std;
 struct student {
-	int name;
+	string name;
 	int score;
 	friend istream& operator >>(istream&in, student&obj);
 	friend ostream& operator <<(ostream&out, const student&obj);
@@ -37,8 +37,8 @@ struct student {
 
 struct student_comparator {
 	int operator ()(const student&x, const student&y) {
-		//return strcmp(x.name.c_str(), y.name.c_str());
-		return x.name - y.name;
+		return strcmp(x.name.c_str(), y.name.c_str());
+		//return x.name - y.name;
 	}
 };
 
@@ -47,6 +47,6 @@ struct student_printer {
 		f << stu;
 	}
 	string to_string(const student&stu) {
-		return std::to_string(stu.name) + " ";
+		return stu.name + " ";
 	}
 };
